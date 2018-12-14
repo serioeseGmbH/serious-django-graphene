@@ -7,7 +7,7 @@ import graphene.test
 
 class GrapheneAPITest(TestCase):
     base = '/graphql/'
-    schema_src = 'floatility.schema.schema'
+    schema_src = 'some.schema'
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
