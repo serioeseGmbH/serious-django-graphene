@@ -50,4 +50,4 @@ Quick start
 
 2. Import and use `serious_django_graphene` wherever you need the Graphene extensions
 
-3. Import and use `serious_django_graphene.tests` wherever you need the Graphene test extensions
+3. Import and use `serious_django_graphene.testing` wherever you need the Graphene test extensions
