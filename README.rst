@@ -47,13 +47,13 @@ Quick start
 
     pip install serious-django-graphene
 
-1. Add "serious_django_graphene" to your INSTALLED_APPS setting like this::
+2. Add "serious_django_graphene" to your INSTALLED_APPS setting like this::
 
     INSTALLED_APPS = [
         ...
         'serious_django_graphene',
     ]
 
-2. Import and use ``serious_django_graphene`` wherever you need the Graphene extensions
+3. Import and use ``serious_django_graphene`` wherever you need the Graphene extensions
 
-3. Import and use ``serious_django_graphene.testing`` wherever you need the Graphene test extensions
+4. Import and use ``serious_django_graphene.testing`` wherever you need the Graphene test extensions
