@@ -1,0 +1,12 @@
+language: python
+python:
+- '3.6'
+install: pip install django
+script: true
+deploy:
+  provider: pypi
+  user: serioeseGmbH
+  on:
+    branch: master
+  password:
+    secure: lIjsN7kCQsgDS19MKgS2rPkCJiKiPfN3J1i9wrHF6d/OaveXD2ySxr0Gt+52EZeEc3rQuE/w943Q98rpIU+HXkRD+9+rxCHCT1Nm+/K1X/CWv2InPCTlev+tH7sGuwrSYRaio4XqIUQUzo48uM8YuOHoWvNmv3luT/UkUbz9SviYHvHuJm/95wxnFErRm3ssSJ2x+PwtE1h9lsEyzit6d1DWbSG+0QXlVJhFQDFgGcPdqJMestHCCELmlNP7XjZSYccbhQ3Z15quMWUYQj64ZmLE0OjknSNGclKapuLEQva+BHh6r0/h2EhgLxc8uri4kJJEJWIOgY2pBym6BYdORstw43GVsQ0bD6/rTWMorzmRhHCs+lSKgyf9I4xqYd0bGye6PSZ5uIQbqDmxCRYM9Cd4AShw2dUKK/FpLR09bIHDC+oz/NaFSIn4IdjCTd7FHN2iPzvz4CWGgbjgUQX4dGuA+SM12e43uTurmveHJiZhGmuyc8DW3KFtzY1PjkcXwZQq1yslyQMWe5ymuMlSqHirfkdF75ckHoPOSahJ8Df+VtBKOdxonJe4lQ2I4Jy3R7mxLL+6J9gPqx4n6ooFUjyRn8TC5HWqjsyl1Pf/tMS3dk70RMhcsb4Q5z5zjA3T+xRlWXJRFgiOemOCYvV2ZpEBQbB+HkGdUjvaLZxs/04=

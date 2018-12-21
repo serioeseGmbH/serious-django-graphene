@@ -9,11 +9,11 @@ os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 setup(
     name='serious-django-graphene',
-    version='0.1',
+    version='0.2',
     packages=find_packages(),
     include_package_data=True,
     license='MIT License',
-    description='A Django extension for using Graphene with Forms.',
+    description='An extension for django-graphene.',
     long_description=README,
     url='https://serioese.gmbh/',
     author='Simon Welker',
