@@ -20,7 +20,8 @@ class GrapheneAPITest(TestCase):
         context = request_factory.get(self.base)
         context.user = user
         if files and type(files) == dict:
-            context.FILES = files
+            for file in files:
+                context.FILES[file] = files[file]
 
         # Create Graphene test client instance and use it to execute the query
         client = graphene.test.Client(self.schema)
