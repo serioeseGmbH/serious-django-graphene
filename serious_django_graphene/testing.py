@@ -14,11 +14,13 @@ class GrapheneAPITest(TestCase):
         self.schema = import_string(self.schema_src)
 
     # adapted from https://stackoverflow.com/a/47762174/3090225
-    def execute(self, query, user=None, variables=None, **kwargs):
+    def execute(self, query, user=None, variables=None, files=None,  **kwargs):
         # Construct context
         request_factory = RequestFactory()
         context = request_factory.get(self.base)
         context.user = user
+        if files and type(files) == dict:
+            context.FILES = files
 
         # Create Graphene test client instance and use it to execute the query
         client = graphene.test.Client(self.schema)
