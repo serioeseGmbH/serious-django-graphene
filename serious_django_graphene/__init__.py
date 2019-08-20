@@ -1,11 +1,11 @@
 from collections import OrderedDict
+from typing import Type, List
 
-from django.core.exceptions import PermissionDenied, ImproperlyConfigured
+from django.core.exceptions import ImproperlyConfigured, ValidationError as DjangoValidationError
 
 import graphene
 from graphene.types.mutation import MutationOptions
 from graphene.types.utils import yank_fields_from_attrs
-
 from graphene_django.forms.converter import convert_form_field
 
 
@@ -76,13 +76,84 @@ class MutationError(graphene.Union):
         )
 
 
+def create_validation_error_output(validation_error: DjangoValidationError):
+    """
+    Creates a beautiful ValidationErrors object so the Frontend can easily see where the
+    validation failed.
+
+    The according mutation needs to have an return field for the error typed as
+    serious_django_graphene.MutationError. E.g.:
+    ```
+    class CreateEmployee(graphene.Mutation):
+
+        class Arguments:
+            some_input_arg = graphene.Int()
+
+        employee = graphene.Field(EmployeeType)
+        success = graphene.Boolean()
+        error = MutationError()
+
+        def mutate(self, info, some_input_arg):
+            try:
+                employee = EmployeeService.update(some_input_arg)
+            except EmployeeService.exceptions as e:
+                if type(e) is ValidationError:
+                    return UpdateEmployee(employee=None,
+                                          error=create_validation_error_output(e),
+                                          success=False)
+                else:
+                    raise MutationExecutionException(str(e))
+            return UpdateEmployee(employee=employee, success=True, error=None)
+    ```
+
+    :param validation_error: The ValidationError to be formated
+    :return: A ValidationErrors graphene.ObjectType
+    """
+    validation_errors = [
+        ValidationError(field=key, messages=value)
+        for key, value in validation_error
+    ]
+    return ValidationErrors(validation_errors=validation_errors)
+
+
+class FailableMutationOptions(MutationOptions):
+    caught_exceptions = None   # type: List[Type[Exception]]
+
+
 class FailableMutation(graphene.Mutation):
+    @classmethod
+    def __init_subclass_with_meta__(cls, caught_exceptions=None, _meta=None, **options):
+        if not _meta:
+            _meta = FailableMutationOptions(cls)
+
+        caught_exceptions = caught_exceptions or ()
+        if type(caught_exceptions) is list:
+            caught_exceptions = tuple(caught_exceptions)
+        _meta.caught_exceptions = caught_exceptions
+
+        super().__init_subclass_with_meta__(_meta=_meta, **options)
+
     class Meta:
         abstract = True
 
     error = MutationError()
     success = graphene.NonNull(graphene.Boolean)
 
+    @classmethod
+    def mutate(cls, info, *args, **kwargs):
+        if not hasattr(cls, 'do_mutate'):
+            raise NotImplementedError(
+                f"Default implementation of FailableMutation.mutate depends on do_mutate method being defined, but "
+                f"{cls} does not have this method!"
+            )
+
+        exceptions = getattr(cls._meta, 'caught_exceptions', ())
+        try:
+            return cls.do_mutate(info, *args, **kwargs)
+        except DjangoValidationError as e:
+            return cls(error=create_validation_error_output(e), success=False)
+        except exceptions as e:
+            return cls(error=ExecutionError(error_message=str(e)), success=False)
 
 
 ### Mutations from Forms
