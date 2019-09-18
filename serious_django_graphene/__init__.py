@@ -141,15 +141,15 @@ class FailableMutation(graphene.Mutation):
 
     @classmethod
     def mutate(cls, info, *args, **kwargs):
-        if not hasattr(cls, 'do_mutate'):
+        if not hasattr(cls, 'perform_mutate'):
             raise NotImplementedError(
-                f"Default implementation of FailableMutation.mutate depends on do_mutate method being defined, but "
+                f"Default implementation of FailableMutation.mutate depends on perform_mutate method being defined, but "
                 f"{cls} does not have this method!"
             )
 
         exceptions = getattr(cls._meta, 'caught_exceptions', ())
         try:
-            return cls.do_mutate(info, *args, **kwargs)
+            return cls.perform_mutate(info, *args, **kwargs)
         except DjangoValidationError as e:
             return cls(error=create_validation_error_output(e), success=False)
         except exceptions as e:

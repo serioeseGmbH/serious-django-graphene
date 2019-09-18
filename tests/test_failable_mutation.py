@@ -7,20 +7,20 @@ from serious_django_graphene import FailableMutation, ExecutionError
 
 
 class FailableMutationTest(TestCase):
-    def test_default_mutate_fails_without_do_mutate(self):
+    def test_default_mutate_fails_without_perform_mutate(self):
         class MyFailableMutation(FailableMutation):
             some_result = graphene.Int()
 
         mut = MyFailableMutation()
         self.assertRaises(NotImplementedError, lambda *_: mut.mutate(SimpleNamespace()))
 
-    def test_default_mutate_calls_do_mutate(self):
+    def test_default_mutate_calls_perform_mutate(self):
         class MyFailableMutation(FailableMutation):
             __method_calls__ = 0
             some_result = graphene.Int()
 
             @classmethod
-            def do_mutate(cls, info, *args, **kwargs):
+            def perform_mutate(cls, info, *args, **kwargs):
                 cls.__method_calls__ += 1
                 return cls(some_result=42)
 
@@ -43,7 +43,7 @@ class FailableMutationTest(TestCase):
                 caught_exceptions = [SomeException]
 
             @classmethod
-            def do_mutate(cls, info, value=None, *args, **kwargs):
+            def perform_mutate(cls, info, value=None, *args, **kwargs):
                 if value is None:
                     raise SomeException("oh no!")
                 elif value is 69:
